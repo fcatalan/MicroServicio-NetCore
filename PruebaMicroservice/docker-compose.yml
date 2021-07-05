@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  pruebamicroservice:
+    image: ${DOCKER_REGISTRY-}pruebamicroservice
+    depends_on:
+      - dbSqlServer
+    build:
+      context: .
+      dockerfile: Dockerfile
+  
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: sqlserver2019
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=PasswordPrueba|1
+    ports:
+      - 1433:1433
+    volumes:
+      - ./data:/mssqldata

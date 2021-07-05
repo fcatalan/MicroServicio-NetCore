@@ -1,0 +1,105 @@
+services:
+  pruebamicroservice:
+    build:
+      context: C:\Users\fabca\Desktop\prueba postulaciones\MicroServicio-NetCore\PruebaMicroservice
+      dockerfile: C:\Users\fabca\Desktop\prueba postulaciones\MicroServicio-NetCore\PruebaMicroservice\Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: PruebaMicroservice
+      target: base
+    container_name: PruebaMicroservice
+    depends_on:
+      dbSqlServer:
+        condition: service_started
+    entrypoint:
+    - tail
+    - -f
+    - /dev/null
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      ASPNETCORE_URLS: https://+:443;http://+:80
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+      NUGET_FALLBACK_PACKAGES: ""
+    image: pruebamicroservice:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net5.0/PruebaMicroservice.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$(pidof
+        dotnet); then kill $PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 443
+      protocol: tcp
+    tty: true
+    volumes:
+    - type: bind
+      source: C:\Users\fabca\AppData\Roaming/Microsoft/UserSecrets
+      target: /root/.microsoft/usersecrets
+      read_only: true
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\fabca\AppData\Roaming/ASP.NET/Https
+      target: /root/.aspnet/https
+      read_only: true
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\fabca\Desktop\prueba postulaciones\MicroServicio-NetCore\PruebaMicroservice
+      target: /app
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\fabca\Desktop\prueba postulaciones\MicroServicio-NetCore\PruebaMicroservice
+      target: /src
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\fabca\vsdbg\vs2017u5
+      target: /remote_debugger
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\fabca\.nuget\packages\
+      target: /root/.nuget/packages
+      read_only: true
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\fabca\AppData\Roaming/ASP.NET/Https
+      target: /root/.aspnet/https
+      read_only: true
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\fabca\AppData\Roaming/Microsoft/UserSecrets
+      target: /root/.microsoft/usersecrets
+      read_only: true
+      bind:
+        create_host_path: true
+  sqlserver:
+    container_name: sqlserver2019
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: PasswordPrueba|1
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 1433
+      published: 1433
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: C:\Users\fabca\Desktop\prueba postulaciones\MicroServicio-NetCore\PruebaMicroservice\data
+      target: /mssqldata
+      bind:
+        create_host_path: true
+networks:
+  default:
+    name: dockercompose10735096970131340546_default
